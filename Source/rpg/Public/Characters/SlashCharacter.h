@@ -1,41 +1,40 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
-#include "Bird.generated.h"
+#include "GameFramework/Character.h"
+#include "SlashCharacter.generated.h"
 
-class UCapsuleComponent;
-class USkeletalMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UGroomComponent;
 
 UCLASS()
-class RPG_API ABird : public APawn
+class RPG_API ASlashCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	ABird();
+	ASlashCharacter();
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	virtual void BeginPlay() override;
-	void Moveforward(float Value);
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
-
+	
 private:
-	UPROPERTY(VisibleAnywhere)
-	UCapsuleComponent* Capsule;
-
-	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* BirdMesh;
-
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* ViewCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = Hair)
+	UGroomComponent* Hair;
+
+	UPROPERTY(VisibleAnywhere, Category = Hair)
+	UGroomComponent* Eyebrows;
 };
