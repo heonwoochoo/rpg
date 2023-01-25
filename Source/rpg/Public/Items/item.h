@@ -49,8 +49,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float RunningTime;
 
-
-
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
 };
