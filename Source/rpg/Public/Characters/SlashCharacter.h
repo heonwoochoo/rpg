@@ -10,7 +10,7 @@ class UCameraComponent;
 class UGroomComponent;
 class Aitem;
 class UAnimMontage;
-
+class AWeapon;
 
 UCLASS()
 class RPG_API ASlashCharacter : public ACharacter
@@ -42,13 +42,26 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
-
 	bool CanAttack();
 
+	void PlayEquipMontage(FName SectionName);
+	bool CanDisarm();
+	bool CanArm();
+
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
+
+	UFUNCTION(BlueprintCallable)
+	void ArmWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+
 private:
+	UPROPERTY(VisibleInstanceOnly);
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	UPROPERTY(VisibleAnywhere)
@@ -66,11 +79,17 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	Aitem* OverlappingItem;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AWeapon* EquippedWeapon;
+
 	/*
 		Animation montages
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 
 public:
 	FORCEINLINE void SetOverlappingItem(Aitem* Item) { OverlappingItem = Item; }

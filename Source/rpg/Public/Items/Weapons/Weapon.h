@@ -18,6 +18,7 @@ class RPG_API AWeapon : public Aitem
 	
 public:
 	void Equip(USceneComponent* InParent, FName InputSocketName);
+	void AttachMeshToSocket(USceneComponent* InParent, const FName& InputSocketName);
 
 protected:
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
