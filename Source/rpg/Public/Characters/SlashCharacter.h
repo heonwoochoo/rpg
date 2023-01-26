@@ -9,7 +9,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
 class Aitem;
-
+class UAnimMontage;
 
 
 UCLASS()
@@ -24,14 +24,32 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	/*
+	* Callbacks for input
+	*/
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
 	void EKeyPress();
+	void Attack();
+
+	/*
+	* Play montage functions
+	*/
+	void PlayAttackMontage();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
+
+	bool CanAttack();
 
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
@@ -47,6 +65,12 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	Aitem* OverlappingItem;
+
+	/*
+		Animation montages
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
 
 public:
 	FORCEINLINE void SetOverlappingItem(Aitem* Item) { OverlappingItem = Item; }

@@ -29,3 +29,4 @@ void USlashAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		CharacterState = SlashCharacter->GetCharacterState();
 	}
 }
+
