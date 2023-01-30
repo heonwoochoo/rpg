@@ -6,6 +6,7 @@
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class USoundBase;
 
 UCLASS()
 class RPG_API AEnemy : public ACharacter, public IHitInterface
@@ -19,6 +20,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetHit(const FVector& ImpactPoint) override;
+	void DirectionalHitReact(const FVector& ImpactPoint);
 
 private:
 	/*
@@ -27,7 +29,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
 
-	void DirectionalHitReact(const FVector& ImpactPoint);
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* HitSound;
 
 protected:
 	virtual void BeginPlay() override;
