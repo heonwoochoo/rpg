@@ -27,6 +27,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
 
+	void DirectionalHitReact(const FVector& ImpactPoint);
+
 protected:
 	virtual void BeginPlay() override;
 
