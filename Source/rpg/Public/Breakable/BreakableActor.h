@@ -6,6 +6,9 @@
 #include "BreakableActor.generated.h"
 
 class UGeometryCollectionComponent;
+class ATreasure;
+class UCapsuleComponent;
+
 
 UCLASS()
 class RPG_API ABreakableActor : public AActor, public IHitInterface
@@ -19,10 +22,15 @@ public:
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		UGeometryCollectionComponent* GeometryCollection;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		UCapsuleComponent* Capsule;
+
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	UGeometryCollectionComponent* GeometryCollection;
-
+	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
+	TSubclassOf<ATreasure> TreasureClass;
 };
