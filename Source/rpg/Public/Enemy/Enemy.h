@@ -11,6 +11,7 @@ class USoundBase;
 class UAttributeComponent;
 class UHealthBarComponent;
 class AAIController;
+class UPawnSensingComponent;
 
 UCLASS()
 class RPG_API AEnemy : public ACharacter, public IHitInterface
@@ -29,12 +30,18 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
+	/*
+	* Component
+	*/
+
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
 
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
 
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensing;
 
 	/*
 	Animation montages
@@ -64,7 +71,7 @@ private:
 	AAIController* EnemyController;
 
 	// Current patrol target
-	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation");
 	AActor* PatrolTarget;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
@@ -81,6 +88,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
 
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -88,6 +97,9 @@ protected:
 	bool InTargetRange(AActor* Target, double Radius);
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
+
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
 
 	/*
 	* Play montage functions
