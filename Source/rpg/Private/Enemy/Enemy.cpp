@@ -34,6 +34,11 @@ AEnemy::AEnemy()
 
 
 
+void AEnemy::PatrolTimerFinished()
+{
+	MoveToTarget(PatrolTarget);
+}
+
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -44,22 +49,9 @@ void AEnemy::BeginPlay()
 	}
 
 	EnemyController = Cast<AAIController>(GetController());
-	if (EnemyController && PatrolTarget)
-	{
-		FAIMoveRequest MoveRequest;
-		MoveRequest.SetGoalActor(PatrolTarget);
-		MoveRequest.SetAcceptanceRadius(15.f);
-		FNavPathSharedPtr NavPath;
-		EnemyController->MoveTo(MoveRequest, &NavPath);
+	MoveToTarget(PatrolTarget);
 
-		// MoveTo() 실행 후 AI가 움직일 경로의 포인트를 저장
-		TArray<FNavPathPoint>& PathPoints = NavPath->GetPathPoints();
-		for (auto& Point : PathPoints)
-		{
-			const FVector& Location = Point.Location;
-			DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Green, false, 10.f);
-		}
-	}
+	//GetWorldTimerManager().SetTimer(PatrolTimer, this, &AEnemy::PatrolTimerFinished, 5.f);
 }
 
 void AEnemy::Die()
@@ -111,8 +103,39 @@ void AEnemy::Die()
 // Enemy와 타겟의 거리가 Radius 이하면 TRUE를 반환
 bool AEnemy::InTargetRange(AActor* Target, double Radius)
 {
+	if (Target == nullptr) return false;
 	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
 	return DistanceToTarget <= Radius;
+}
+
+// AIController가 target으로 이동
+void AEnemy::MoveToTarget(AActor* Target)
+{
+	if (EnemyController == nullptr || Target == nullptr) return;
+	FAIMoveRequest MoveRequest;
+	MoveRequest.SetGoalActor(Target);
+	MoveRequest.SetAcceptanceRadius(15.f);
+	EnemyController->MoveTo(MoveRequest);
+}
+
+AActor* AEnemy::ChoosePatrolTarget()
+{
+	TArray<AActor*> ValidTargets;
+	for (AActor* Target : PatrolTargets)
+	{
+		if (Target != PatrolTarget)
+		{
+			ValidTargets.AddUnique(Target);
+		}
+	}
+
+	const int32 NumPatrolTargets = ValidTargets.Num();
+	if (NumPatrolTargets > 0)
+	{
+		const int32 TargetSelection = FMath::FRandRange(0, NumPatrolTargets - 1);
+		return ValidTargets[TargetSelection];
+	}
+	return nullptr;
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
@@ -129,11 +152,28 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// HP Bar 표시
+	CheckCombatTarget();
+	CheckPatrolTarget();
+}
+
+// 랜덤 타겟 설정, 딜레이 후 이동
+void AEnemy::CheckPatrolTarget()
+{
+	if (InTargetRange(PatrolTarget, PatrolRadius))
+	{
+		PatrolTarget = ChoosePatrolTarget();
+		const float WaitTime = FMath::FRandRange(WaitMin, WaitMax);
+		GetWorldTimerManager().SetTimer(PatrolTimer, this, &AEnemy::PatrolTimerFinished, WaitTime);
+	}
+}
+
+void AEnemy::CheckCombatTarget()
+{
 	if (CombatTarget)
 	{
 		if (!InTargetRange(CombatTarget, CombatRadius))
 		{
+			// 타켓과 멀어지면 Hp bar 표시 안함
 			CombatTarget = nullptr;
 			if (HealthBarWidget)
 			{
@@ -141,36 +181,6 @@ void AEnemy::Tick(float DeltaTime)
 			}
 		}
 	}
-
-	// random target patrol
-	if (PatrolTarget && EnemyController)
-	{
-		if (InTargetRange(PatrolTarget, PatrolRadius))
-		{
-			TArray<AActor*> ValidTargets;
-			for (AActor* Target : PatrolTargets)
-			{
-				if (Target != PatrolTarget)
-				{
-					ValidTargets.AddUnique(Target);
-				}
-			}
-
-			const int32 NumPatrolTargets = ValidTargets.Num();
-			if (NumPatrolTargets > 0)
-			{
-				const int32 TargetSelection = FMath::FRandRange(0, NumPatrolTargets - 1);
-				AActor* Target = ValidTargets[TargetSelection];
-				PatrolTarget = Target;
-
-				FAIMoveRequest MoveRequest;
-				MoveRequest.SetGoalActor(PatrolTarget);
-				MoveRequest.SetAcceptanceRadius(15.f);
-				EnemyController->MoveTo(MoveRequest);
-			}
-		}
-	}
-
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
