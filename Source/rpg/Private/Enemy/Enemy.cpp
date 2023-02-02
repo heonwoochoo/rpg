@@ -151,12 +151,17 @@ void AEnemy::PawnSeen(APawn* SeenPawn)
 	if (EnemyState == EEnemyState::EES_Chasing) return;
 	if (SeenPawn->ActorHasTag(FName("SlashCharacter")))
 	{
-		EnemyState = EEnemyState::EES_Chasing;
+		
 		GetWorldTimerManager().ClearTimer(PatrolTimer);
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		CombatTarget = SeenPawn;
-		MoveToTarget(CombatTarget);
-		UE_LOG(LogTemp, Warning, TEXT("Seen Pawn, now chasing!"));
+
+		if (EnemyState != EEnemyState::EES_Attacking)
+		{
+			EnemyState = EEnemyState::EES_Chasing;
+			MoveToTarget(CombatTarget);
+			UE_LOG(LogTemp, Warning, TEXT("Seen Pawn, now chasing!"));
+		}
 	}
 }
 
@@ -197,17 +202,33 @@ void AEnemy::CheckPatrolTarget()
 
 void AEnemy::CheckCombatTarget()
 {
-	if (CombatTarget)
+	if (!InTargetRange(CombatTarget, CombatRadius))
 	{
-		if (!InTargetRange(CombatTarget, CombatRadius))
+		// Outside combat radius, lose interest
+		CombatTarget = nullptr;
+		if (HealthBarWidget)
 		{
-			// 타켓과 멀어지면 Hp bar 표시 안함
-			CombatTarget = nullptr;
-			if (HealthBarWidget)
-			{
-				HealthBarWidget->SetVisibility(false);
-			}
+			HealthBarWidget->SetVisibility(false);
 		}
+		EnemyState = EEnemyState::EES_Patrolling;
+		GetCharacterMovement()->MaxWalkSpeed = 125.f;
+		MoveToTarget(PatrolTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Lose Interest"));
+	}
+	else if (!InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Chasing)
+	{
+		// Outside attack range, chase character
+		EnemyState = EEnemyState::EES_Chasing;
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		MoveToTarget(CombatTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Chase Player"));
+	}
+	else if (InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Attacking)
+	{
+		// Inside atatck range, attack character
+		EnemyState = EEnemyState::EES_Attacking;
+		// TODO: Attack montage
+		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
 	}
 }
 
