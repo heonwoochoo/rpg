@@ -108,6 +108,13 @@ void AEnemy::Die()
 	SetLifeSpan(3.f);
 }
 
+// Enemy와 타겟의 거리가 Radius 이하면 TRUE를 반환
+bool AEnemy::InTargetRange(AActor* Target, double Radius)
+{
+	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
+	return DistanceToTarget <= Radius;
+}
+
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -122,10 +129,10 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// HP Bar 표시
 	if (CombatTarget)
 	{
-		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
-		if (DistanceToTarget > CombatRadius)
+		if (!InTargetRange(CombatTarget, CombatRadius))
 		{
 			CombatTarget = nullptr;
 			if (HealthBarWidget)
@@ -134,6 +141,36 @@ void AEnemy::Tick(float DeltaTime)
 			}
 		}
 	}
+
+	// random target patrol
+	if (PatrolTarget && EnemyController)
+	{
+		if (InTargetRange(PatrolTarget, PatrolRadius))
+		{
+			TArray<AActor*> ValidTargets;
+			for (AActor* Target : PatrolTargets)
+			{
+				if (Target != PatrolTarget)
+				{
+					ValidTargets.AddUnique(Target);
+				}
+			}
+
+			const int32 NumPatrolTargets = ValidTargets.Num();
+			if (NumPatrolTargets > 0)
+			{
+				const int32 TargetSelection = FMath::FRandRange(0, NumPatrolTargets - 1);
+				AActor* Target = ValidTargets[TargetSelection];
+				PatrolTarget = Target;
+
+				FAIMoveRequest MoveRequest;
+				MoveRequest.SetGoalActor(PatrolTarget);
+				MoveRequest.SetAcceptanceRadius(15.f);
+				EnemyController->MoveTo(MoveRequest);
+			}
+		}
+	}
+
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
