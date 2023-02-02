@@ -10,6 +10,7 @@ class UAnimMontage;
 class USoundBase;
 class UAttributeComponent;
 class UHealthBarComponent;
+class AAIController;
 
 UCLASS()
 class RPG_API AEnemy : public ACharacter, public IHitInterface
@@ -53,6 +54,21 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 500.f;
+	
+	/* 
+	* Navigation 
+	*/
+	UPROPERTY()
+	AAIController* EnemyController;
+
+	// Current patrol target
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	AActor* PatrolTarget;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TArray<AActor*> PatrolTargets;
+
+
 
 protected:
 	virtual void BeginPlay() override;
