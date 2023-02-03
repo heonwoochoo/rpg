@@ -153,7 +153,7 @@ void AEnemy::PawnSeen(APawn* SeenPawn)
 	{
 		
 		GetWorldTimerManager().ClearTimer(PatrolTimer);
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		GetCharacterMovement()->MaxWalkSpeed = ChasingWalkSpeed;
 		CombatTarget = SeenPawn;
 
 		if (EnemyState != EEnemyState::EES_Attacking)
@@ -211,7 +211,7 @@ void AEnemy::CheckCombatTarget()
 			HealthBarWidget->SetVisibility(false);
 		}
 		EnemyState = EEnemyState::EES_Patrolling;
-		GetCharacterMovement()->MaxWalkSpeed = 125.f;
+		GetCharacterMovement()->MaxWalkSpeed = PatrolWalkSpeed;
 		MoveToTarget(PatrolTarget);
 		UE_LOG(LogTemp, Warning, TEXT("Lose Interest"));
 	}
@@ -219,7 +219,7 @@ void AEnemy::CheckCombatTarget()
 	{
 		// Outside attack range, chase character
 		EnemyState = EEnemyState::EES_Chasing;
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		GetCharacterMovement()->MaxWalkSpeed = ChasingWalkSpeed;
 		MoveToTarget(CombatTarget);
 		UE_LOG(LogTemp, Warning, TEXT("Chase Player"));
 	}
@@ -327,6 +327,8 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
 	}
 	CombatTarget = EventInstigator->GetPawn();
-
+	EnemyState = EEnemyState::EES_Chasing;
+	GetCharacterMovement()->MaxWalkSpeed = ChasingWalkSpeed;
+	MoveToTarget(CombatTarget);
 	return DamageAmount;
 }

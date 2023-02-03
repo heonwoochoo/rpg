@@ -91,6 +91,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
 
+	float ChasingWalkSpeed = 300.f;
+	float PatrolWalkSpeed = 125.f;
+
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 
 protected:
