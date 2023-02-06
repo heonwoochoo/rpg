@@ -1,6 +1,8 @@
 #include "Characters/BaseCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Components/AttributeComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Items/Weapons/Weapon.h"
 
 ABaseCharacter::ABaseCharacter()
@@ -25,6 +27,11 @@ bool ABaseCharacter::CanAttack()
 	return false;
 }
 
+bool ABaseCharacter::IsAlive()
+{
+	return Attributes && Attributes->IsAlive();
+}
+
 void ABaseCharacter::AttackEnd()
 {
 }
@@ -33,8 +40,19 @@ void ABaseCharacter::Die()
 {
 }
 
-void ABaseCharacter::PlayAttackMontage()
+void ABaseCharacter::DisableCapsule()
 {
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+int32 ABaseCharacter::PlayAttackMontage()
+{
+	return PlayRandomMontageSection(AttackMontage, AttackMontageSections);
+}
+
+int32 ABaseCharacter::PlayDeathMontage()
+{
+	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
 }
 
 void ABaseCharacter::PlayHitReactMontage(const FName& SectionName)
@@ -84,6 +102,57 @@ void ABaseCharacter::DirectionalHitReact(const FVector& ImpactPoint)
 	}
 
 	PlayHitReactMontage(Section);
+}
+
+void ABaseCharacter::PlayHitSound(const FVector& ImpactPoint)
+{
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			HitSound,
+			ImpactPoint
+		);
+	}
+}
+
+void ABaseCharacter::SpawnHitParticles(const FVector& ImpactPoint)
+{
+	if (HitParticles && GetWorld())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			ImpactPoint
+		);
+	}
+}
+
+void ABaseCharacter::HandleDamage(float DamageAmount)
+{
+	if (Attributes)
+	{
+		Attributes->ReceiveDamage(DamageAmount);
+	}
+}
+
+void ABaseCharacter::PlayMontageSection(UAnimMontage* Montage, const FName& SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && Montage)
+	{
+		AnimInstance->Montage_Play(Montage);
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+int32 ABaseCharacter::PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames)
+{
+	if (SectionNames.Num() <= 1) return -1;
+	const int32 MaxSectionIndex = SectionNames.Num() - 1;
+	const int32 Section = FMath::RandRange(0, MaxSectionIndex);
+	PlayMontageSection(Montage, SectionNames[Section]);
+	return Section;
 }
 
 void ABaseCharacter::Tick(float DeltaTime)
