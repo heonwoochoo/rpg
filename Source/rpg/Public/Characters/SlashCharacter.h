@@ -17,10 +17,7 @@ class RPG_API ASlashCharacter : public ABaseCharacter
 
 public:
 	ASlashCharacter();
-	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
 
 protected:
 	virtual void BeginPlay() override;
@@ -34,18 +31,21 @@ protected:
 	virtual void Attack() override;
 
 	/* Combat */
+	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
 
 	void PlayEquipMontage(FName SectionName);
 	bool CanDisarm();
 	bool CanArm();
-
-	UFUNCTION(BlueprintCallable)
 	void Disarm();
+	void Arm();
 
 	UFUNCTION(BlueprintCallable)
-	void ArmWeapon();
+	void AttachWeaponToBack();
+
+	UFUNCTION(BlueprintCallable)
+	void AttachWeaponToHand();
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
