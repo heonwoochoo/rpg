@@ -25,9 +25,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	/*
-	* Callbacks for input
-	*/
+	/* Callbacks for input */
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void Turn(float Value);
@@ -35,9 +33,7 @@ protected:
 	void EKeyPress();
 	virtual void Attack() override;
 
-	/*
-	* Play montage functions
-	*/
+	/* Combat */
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
 
@@ -55,12 +51,7 @@ protected:
 	void FinishEquipping();
 
 private:
-	UPROPERTY(VisibleInstanceOnly);
-	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EActionState ActionState = EActionState::EAS_Unoccupied;
-
+	/* Character Component */
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
@@ -76,10 +67,13 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	Aitem* OverlappingItem;
 
-	/*
-	Animation montages
-	*/
+	UPROPERTY(VisibleInstanceOnly);
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
+
+	/* Animation montages */
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
 
