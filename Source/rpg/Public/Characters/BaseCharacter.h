@@ -19,6 +19,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	/* Combat */
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter);
 	virtual void Attack();
 	virtual bool CanAttack();
@@ -28,10 +30,13 @@ protected:
 	void SpawnHitParticles(const FVector& ImpactPoint);
 	virtual void HandleDamage(float DamageAmount);
 	bool IsAlive();
+	void DisableCapsule();
+
+	/* Montage */
 	virtual int32 PlayAttackMontage();
 	virtual int32 PlayDeathMontage();
 	void PlayHitReactMontage(const FName& SectionName);
-	void DisableCapsule();
+	void StopAttackMontage();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();

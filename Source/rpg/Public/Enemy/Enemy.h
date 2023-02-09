@@ -53,6 +53,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 
+	UPROPERTY(BlueprintReadOnly, Category = Combat)
+	AActor* CombatTarget;
+
 private:
 	/* AI Behavior */
 	void InitializeEnemy();
@@ -90,9 +93,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AWeapon> WeaponClass;
-
-	UPROPERTY()
-	AActor* CombatTarget;
 
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 1000.f;
