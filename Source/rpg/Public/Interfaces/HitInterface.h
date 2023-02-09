@@ -24,5 +24,5 @@ class RPG_API IHitInterface
 public:
 	// pure virtual function
 	UFUNCTION(BlueprintNativeEvent)
-	void GetHit(const FVector& ImpactPoint);
+	void GetHit(const FVector& ImpactPoint, AActor* Hitter);
 };
