@@ -19,7 +19,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
+	virtual void GetHit_Implementation(const FVector& ImpactPoint);
 	virtual void Attack();
 	virtual bool CanAttack();
 	virtual void Die();
