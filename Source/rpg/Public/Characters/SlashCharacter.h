@@ -8,6 +8,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
+class USlashOverlay;
 class Aitem;
 
 UCLASS()
@@ -55,6 +56,8 @@ protected:
 	void HitReactEnd();
 
 private:
+	void InitializeSlashOverlay();
+
 	/* Character Component */
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
@@ -80,6 +83,9 @@ private:
 	/* Animation montages */
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
+
+	UPROPERTY()
+	USlashOverlay* SlashOverlay;
 
 public:
 	FORCEINLINE void SetOverlappingItem(Aitem* Item) { OverlappingItem = Item; }
