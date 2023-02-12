@@ -9,7 +9,6 @@ void USlashOverlay::SetHealthBarPercent(float Percent)
 		HealthProgressBar->SetPercent(Percent);
 	}
 }
-
 void USlashOverlay::SetStaminaBarPercent(float Percent)
 {
 	if (StaminaProgressBar)

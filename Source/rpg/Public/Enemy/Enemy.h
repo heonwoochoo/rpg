@@ -1,7 +1,5 @@
 #pragma once
-
 #include "CoreMinimal.h"
-#include "Characters/CharacterTypes.h"
 #include "Characters/BaseCharacter.h"
 #include "Enemy.generated.h"
 
@@ -42,13 +40,8 @@ protected:
 	virtual void Attack() override;
 	virtual bool CanAttack() override;
 	virtual void HandleDamage(float DamageAmount) override;
-	virtual int32 PlayDeathMontage() override;
 	virtual void AttackEnd() override;
 	/** </ABaseCharacter> */
-
-
-	UPROPERTY(BlueprintReadOnly)
-	TEnumAsByte<EDeathPose> DeathPose;
 
 	UPROPERTY(BlueprintReadOnly)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
