@@ -18,8 +18,8 @@ Aitem::Aitem()
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
 
-	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Ember"));
-	EmbersEffect->SetupAttachment(GetRootComponent());
+	ItemEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Ember"));
+	ItemEffect->SetupAttachment(GetRootComponent());
 }
 
 void Aitem::BeginPlay()
