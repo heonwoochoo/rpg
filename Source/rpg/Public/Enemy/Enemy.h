@@ -8,6 +8,7 @@ class UHealthBarComponent;
 class AAIController;
 class UPawnSensingComponent;
 class AWeapon;
+class ASoul;
 
 UCLASS()
 class RPG_API AEnemy : public ABaseCharacter
@@ -73,6 +74,7 @@ private:
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
 	void SpawnDefaultWeapon();
+	void SpawnSoul();
 
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);	// Callback for OnPawnSeen in UPawnSensingComponent
@@ -131,4 +133,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float DeathLifeSpan = 5.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TSubclassOf<ASoul> SoulClass;
 };
