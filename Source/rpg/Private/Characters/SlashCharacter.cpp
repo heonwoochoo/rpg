@@ -87,6 +87,16 @@ void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* 
 	}
 }
 
+void ASlashCharacter::SetOverlappingItem(Aitem* Item)
+{
+	OverlappingItem = Item;
+}
+
+void ASlashCharacter::AddSouls(ASoul* Soul)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ASlashCharacter::AddSouls"));
+}
+
 void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
