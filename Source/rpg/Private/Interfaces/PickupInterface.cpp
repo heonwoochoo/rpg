@@ -12,3 +12,7 @@ void IPickupInterface::SetOverlappingItem(Aitem* Item)
 void IPickupInterface::AddSouls(ASoul* Soul)
 {
 }
+
+void IPickupInterface::AddGold(ATreasure* Treasure)
+{
+}
