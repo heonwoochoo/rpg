@@ -62,8 +62,8 @@ void ABaseCharacter::DodgeEnd()
 void ABaseCharacter::Die()
 {
 	Tags.Add(FName("Dead"));
-	PlayDeathMontage();
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	PlayDeathMontage();	
 }
 
 void ABaseCharacter::DisableCapsule()
@@ -76,12 +76,12 @@ void ABaseCharacter::DisableMeshCollision()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-int32 ABaseCharacter::PlayAttackMontage()
+void ABaseCharacter::PlayAttackMontage()
 {
-	return PlayRandomMontageSection(AttackMontage, AttackMontageSections);
+	PlayRandomMontageSection(AttackMontage, AttackMontageSections);
 }
 
-int32 ABaseCharacter::PlayDeathMontage()
+void ABaseCharacter::PlayDeathMontage()
 {
 	const int32 Selection = PlayRandomMontageSection(DeathMontage, DeathMontageSections);
 	TEnumAsByte<EDeathPose> Pose(Selection);
@@ -89,7 +89,6 @@ int32 ABaseCharacter::PlayDeathMontage()
 	{
 		DeathPose = Pose;
 	}
-	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
 }
 
 void ABaseCharacter::PlayDodgeMontage()

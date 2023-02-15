@@ -35,8 +35,8 @@ protected:
 	void DisableMeshCollision();
 
 	/* Montage */
-	virtual int32 PlayAttackMontage();
-	virtual int32 PlayDeathMontage();
+	virtual void PlayAttackMontage();
+	virtual void PlayDeathMontage();
 	virtual void PlayDodgeMontage();
 	void PlayHitReactMontage(const FName& SectionName);
 	void StopAttackMontage();
