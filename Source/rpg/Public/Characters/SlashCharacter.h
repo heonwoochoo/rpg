@@ -21,6 +21,7 @@ class RPG_API ASlashCharacter : public ABaseCharacter, public IPickupInterface
 
 public:
 	ASlashCharacter();
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -40,6 +41,8 @@ protected:
 	virtual void Attack() override;
 	void Dodge();
 
+
+
 	/* Combat */
 	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
@@ -52,6 +55,8 @@ protected:
 	void Disarm();
 	void Arm();
 	virtual void Die() override;
+	bool HasEnoughStamina();
+	bool IsOccupied();
 
 	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToBack();
