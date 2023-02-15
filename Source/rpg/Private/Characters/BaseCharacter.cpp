@@ -55,6 +55,10 @@ void ABaseCharacter::AttackEnd()
 {
 }
 
+void ABaseCharacter::DodgeEnd()
+{
+}
+
 void ABaseCharacter::Die()
 {
 	Tags.Add(FName("Dead"));
@@ -86,6 +90,11 @@ int32 ABaseCharacter::PlayDeathMontage()
 		DeathPose = Pose;
 	}
 	return PlayRandomMontageSection(DeathMontage, DeathMontageSections);
+}
+
+void ABaseCharacter::PlayDodgeMontage()
+{
+	PlayMontageSection(DodgeMontage, FName("Default"));
 }
 
 void ABaseCharacter::PlayHitReactMontage(const FName& SectionName)

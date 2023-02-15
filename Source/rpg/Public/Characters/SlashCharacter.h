@@ -38,11 +38,13 @@ protected:
 	void LookUp(float Value);
 	void EKeyPress();
 	virtual void Attack() override;
+	void Dodge();
 
 	/* Combat */
 	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
+	virtual void DodgeEnd() override;
 
 	void PlayEquipMontage(FName SectionName);
 	bool CanDisarm();

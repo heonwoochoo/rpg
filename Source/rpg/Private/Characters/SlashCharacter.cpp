@@ -57,6 +57,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction(FName("Jump"), EInputEvent::IE_Pressed, this, &ASlashCharacter::Jump);
 	PlayerInputComponent->BindAction(FName("Equip"), EInputEvent::IE_Pressed, this, &ASlashCharacter::EKeyPress);
 	PlayerInputComponent->BindAction(FName("Attack"), EInputEvent::IE_Pressed, this, &ASlashCharacter::Attack);
+	PlayerInputComponent->BindAction(FName("Dodge"), EInputEvent::IE_Pressed, this, &ASlashCharacter::Dodge);
 }
 
 void ASlashCharacter::Jump()
@@ -177,6 +178,13 @@ void ASlashCharacter::Attack()
 	}	 
 }
 
+void ASlashCharacter::Dodge()
+{
+	if (ActionState != EActionState::EAS_Unoccupied) return;
+	PlayDodgeMontage();
+	ActionState = EActionState::EAS_Dodge;
+}
+
 void ASlashCharacter::EquipWeapon(AWeapon* Weapon)
 {
 	Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
@@ -194,6 +202,13 @@ bool ASlashCharacter::CanAttack()
 {
 	return ActionState == EActionState::EAS_Unoccupied &&
 		CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+void ASlashCharacter::DodgeEnd()
+{
+	Super::DodgeEnd();
+
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 void ASlashCharacter::PlayEquipMontage(FName SectionName)
