@@ -38,7 +38,7 @@ private:
 	int32 Soul;
 
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
-	float DodgeCost = 14.f;
+	float DodgeCost = 30.f;
 
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
 	float StaminaRegenRate = 4.f;

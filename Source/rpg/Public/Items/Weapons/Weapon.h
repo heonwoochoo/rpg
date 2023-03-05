@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Items/item.h"
+#include "Data/ItemData.h"
 #include "Weapon.generated.h"
 
 class USoundBase;
 class UBoxComponent;
-
 /**
  * 
  */
@@ -27,6 +27,12 @@ public:
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InputSocketName);
 
 	TArray<AActor*> IgnoreActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Data)
+	EItemType ItemType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Data)
+	FGenericItemInfo ItemInfo;
 
 protected:
 	virtual void BeginPlay() override;
