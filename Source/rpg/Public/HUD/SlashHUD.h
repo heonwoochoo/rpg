@@ -7,7 +7,7 @@
 #include "SlashHUD.generated.h"
 
 class USlashOverlay;
-
+class UItemInfo;
 /**
  * 
  */
@@ -20,13 +20,22 @@ protected:
 	void virtual BeginPlay() override;
 
 private:
-
 	UPROPERTY(EditDefaultsOnly, Category = Slash)
 	TSubclassOf<USlashOverlay> SlashOverlayClass;
 
 	UPROPERTY()
 	USlashOverlay* SlashOverlay;
 
+	UPROPERTY(EditDefaultsOnly, Category = Slash)
+	TSubclassOf<UItemInfo> ItemInfoClass;
+
+	UPROPERTY()
+	UItemInfo* ItemInfo;
+
 public:
-	FORCEINLINE USlashOverlay* GetSlashOverlay() const { return SlashOverlay; }
+	UFUNCTION(BlueprintCallable)
+	USlashOverlay* GetSlashOverlay();
+
+	UFUNCTION(BlueprintCallable)
+	UItemInfo* GetItemInfo();
 };

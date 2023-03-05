@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Items/Weapons/Weapon.h"
 #include "Characters/SlashCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -9,6 +8,10 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Interfaces/HitInterface.h"
 #include "NiagaraComponent.h"
+#include "Data/ItemInfoAsset.h"
+#include "HUD/ItemInfo.h"
+#include "HUD/SlashHUD.h"
+#include "/git/rpg/Source/rpg/rpgGameModeBase.h"
 
 AWeapon::AWeapon()
 {
@@ -23,6 +26,8 @@ AWeapon::AWeapon()
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace End"));
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
 }
+
+
 
 void AWeapon::BeginPlay()
 {
@@ -94,6 +99,42 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	}
 }
 
+void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	ASlashCharacter* OverlappedCharacter = Cast<ASlashCharacter>(OtherActor);
+
+	if (ItemState == EItemState::EIS_Hovering && SlashHUD && SlashCharacter == OverlappedCharacter)
+	{
+		ASlashHUD* HUD = Cast<ASlashHUD>(UGameplayStatics::GetActorOfClass(this, SlashHUD));
+		if (HUD)
+		{
+			UItemInfo* ItemDetailInfo = HUD->GetItemInfo();
+			ItemDetailInfo->SetVisibility(ESlateVisibility::Visible);
+			ItemDetailInfo->SetItemImage(ItemInfo.ItemImage);
+			ItemDetailInfo->SetAbility(ItemInfo.ItemAbility);
+			ItemDetailInfo->SetPrice(ItemInfo.ItemCost);
+			ItemDetailInfo->SetDescription(ItemInfo.ItemDescription);
+			ItemDetailInfo->SetName(ItemInfo.ItemName);
+		}
+	}
+}
+
+void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	Super::OnSphereEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+	if (SlashHUD)
+	{
+		ASlashHUD* HUD = Cast<ASlashHUD>(UGameplayStatics::GetActorOfClass(this, SlashHUD));
+		if (HUD)
+		{
+			HUD->GetItemInfo()->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
 bool AWeapon::ActorIsSametype(AActor* OtherActor)
 {
 	return GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Enemy"));
@@ -106,6 +147,24 @@ void AWeapon::ExecuteGetHit(FHitResult& BoxHit)
 	if (HitInterface)
 	{
 		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint, GetOwner());
+	}
+}
+
+void AWeapon::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (ItemType == EItemType::None) { return; }
+	if (ItemInfoAsset)
+	{
+		for (auto& info : ItemInfoAsset->ItemInfoArray)
+		{
+			if (info.ItemType == ItemType)
+			{
+				ItemInfo = info;
+				break;
+			}
+		}
 	}
 }
 

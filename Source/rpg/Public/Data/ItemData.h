@@ -26,20 +26,22 @@ struct FGenericItemInfo
 	FString ItemName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
-	uint8 ItemCost;
+	int32 ItemCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
-	uint8 ItemDurability;
+	int32 ItemAbility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
-	FString ItemInfo;
+	int32 ItemDurability;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
+	FString ItemDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
 	UStaticMesh* Mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Info")
 	UTexture2D* ItemImage;
-
 };
 
 /**

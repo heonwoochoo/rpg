@@ -71,4 +71,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* PickupEffect;
+
+	FORCEINLINE EItemState GetItemState() const { return ItemState; }
 };
